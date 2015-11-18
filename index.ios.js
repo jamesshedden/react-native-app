@@ -5,6 +5,12 @@
 'use strict';
 
 let React = require('react-native');
+let DB = require('./db.js');
+let DBEvents = require('react-native-db-models').DBEvents;
+
+DBEvents.on('all', function(){
+  console.log('Database changed');
+})
 
 let {
   AppRegistry,
@@ -12,7 +18,8 @@ let {
   Text,
   TouchableOpacity,
   View,
-  Navigator
+  Navigator,
+  AsyncStorage
 } = React;
 
 var SCREEN_WIDTH = require('Dimensions').get('window').width;
@@ -36,11 +43,46 @@ var CustomSceneConfig = Object.assign({}, BaseConfig, {
 });
 
 let WelcomePage = React.createClass({
+  getInitialState(){
+  	return ({
+      choices: null,
+    });
+	},
+
   _handlePress() {
     this.props.navigator.push({id: 2,});
   },
 
+  _getChoices() {
+    DB.choices.get_all((data) => {
+      let choicesRows = Object.keys(data.rows).map((row) => {
+        return <Text style={styles.row}>{row}</Text>;
+      });
+
+      this.setState({
+        choices: choicesRows,
+      });
+    });
+  },
+
+  componentWillMount() {
+    this._getChoices();
+  },
+
+  componentDidMount() {
+    this._getChoices();
+  },
+
+  componentDidUpdate() {
+    setTimeout(() => {
+      this._getChoices();
+    });
+  },
+
   render() {
+    var choices = this.state.choices;
+    // console.log(Object.keys(this.state.choices));
+
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>What are you doing today?</Text>
@@ -48,6 +90,7 @@ let WelcomePage = React.createClass({
         style={styles.buttonContainer}>
           <Text style={styles.button}>Not sure, you choose</Text>
         </TouchableOpacity>
+        <View style={styles.rows}>{this.state.choices}</View>
        </View>
     )
   },
@@ -58,15 +101,35 @@ let ChoicePage = React.createClass({
     this.props.navigator.pop();
   },
 
+  getInitialState(){
+  	return ({
+      choice: '',
+    });
+	},
+
   _chooseActivity() {
     let activities = ['music', 'illustration'];
     return activities[Math.floor(Math.random() * activities.length)];
   },
 
+  _addChoice() {
+    DB.choices.add({
+      name: this._chooseActivity(),
+    }, (data) => {
+      this.setState({
+        choice: data.name,
+      });
+    });
+  },
+
+  componentDidMount() {
+    this._addChoice();
+  },
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>How about doing some {this._chooseActivity()}?</Text>
+        <Text style={styles.welcome}>How about doing some {this.state.choice}?</Text>
         <TouchableOpacity onPress={this._handlePress}
         style={styles.buttonContainer}>
           <Text style={styles.button}>Sounds good!</Text>
@@ -125,7 +188,7 @@ let styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
-  }
+  },
 });
 
 AppRegistry.registerComponent('reactNativeProject', () => reactNativeProject);

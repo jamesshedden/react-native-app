@@ -66,17 +66,31 @@ let WelcomePage = React.createClass({
     });
   },
 
+  _getSets() {
+    let sets = [];
+
+    DB.sets.get_all((data) => {
+      let choicesRows = Object.keys(data.rows).map((row) => {
+        sets.push(data.rows[row].name);
+      });
+      this.setState({sets});
+    });
+  },
+
   componentWillMount() {
     this._getChoices();
+    this._getSets();
   },
 
   componentDidMount() {
     this._getChoices();
+    this._getSets();
   },
 
   componentDidUpdate() {
     setTimeout(() => {
       this._getChoices();
+      this._getSets();
     });
   },
 
@@ -90,6 +104,8 @@ let WelcomePage = React.createClass({
         style={styles.buttonContainer}>
           <Text style={styles.button}>Not sure, you choose</Text>
         </TouchableOpacity>
+
+        <Text>{this.state.sets}</Text>
       </View>
     )
   },
@@ -132,38 +148,75 @@ let ChoicePage = React.createClass({
   //   <Text style={styles.button}>Sounds good!</Text>
   // </TouchableOpacity>
 
+  _buildOptions() {
+    let optionsElements = this.state.options.map((option, index) => {
+      return (
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.optionTextContainer}>
+            <Text style={styles.optionText}>
+              {option}
+            </Text>
+          </View>
+
+          <TouchableOpacity style={styles.optionRemoveBtn}
+          onPress={this._removeOption.bind(this, index)}>
+            <Text style={styles.optionRemoveBtnText}>x</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    });
+    this.setState({optionsElements});
+  },
+
+  _removeOption(index) {
+    let options = this.state.options || [];
+    options.splice(index, 1);
+    this.setState({options});
+    this._buildOptions();
+  },
+
   _addOption() {
     let options = this.state.options || [];
     options.push(this.state.optionText);
+    this.setState({options});
+    this._buildOptions();
+  },
 
-    let optionsElements = options.map((option) => {
-      return (
-        <Text style={styles.optionText}>
-          {option}
-        </Text>
-      );
-    });
+  _submitSet() {
+    let options = this.state.options || [];
+    let setName = this.state.setName || '';
 
-    this.setState({options, optionsElements});
+    console.log(options);
+
+    DB.sets.add({
+      name: setName,
+      options,
+    }, this._handlePress);
   },
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+        <TextInput style={styles.textInput}
         onChangeText={(setName) => this.setState({setName})}
         value={this.state.setName}
         placeholder='Title eg Dinner'
         onSubmitEditing={(a) => console.log(a)}/>
 
-        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+        <TextInput style={styles.textInput}
         onChangeText={(optionText) => this.setState({optionText})}
         value={this.state.optionText}
+        placeholder='Option eg Pizza'
         onSubmitEditing={this._addOption}/>
 
         <View style={styles.options}>
           {this.state.optionsElements}
         </View>
+
+        <TouchableOpacity style={styles.buttonContainer}
+        onPress={this._submitSet}>
+          <Text style={styles.button}>Submit</Text>
+        </TouchableOpacity>
       </View>
     )
   },
@@ -226,13 +279,43 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  optionText: {
+  optionTextContainer: {
+    backgroundColor: 'orangered',
+    borderRadius: 5,
     marginBottom: 10,
     padding: 10,
-    backgroundColor: 'orangered',
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  optionText: {
     color: 'gold',
     fontSize: 20,
+  },
+  optionRemoveBtn: {
+    marginBottom: 10,
+    padding: 10,
     borderRadius: 5,
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    marginLeft: 5,
+  },
+  optionRemoveBtnText: {
+    color: 'orangered',
+    fontSize: 20,
+  },
+  textInput: {
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    fontSize: 20,
+    color: 'orangered',
+    marginTop: 10,
+    height: 40,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
 });
 

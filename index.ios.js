@@ -19,7 +19,8 @@ let {
   TouchableOpacity,
   View,
   Navigator,
-  AsyncStorage
+  AsyncStorage,
+  TextInput,
 } = React;
 
 var SCREEN_WIDTH = require('Dimensions').get('window').width;
@@ -81,7 +82,6 @@ let WelcomePage = React.createClass({
 
   render() {
     var choices = this.state.choices;
-    // console.log(Object.keys(this.state.choices));
 
     return (
       <View style={styles.container}>
@@ -90,8 +90,7 @@ let WelcomePage = React.createClass({
         style={styles.buttonContainer}>
           <Text style={styles.button}>Not sure, you choose</Text>
         </TouchableOpacity>
-        <View style={styles.rows}>{this.state.choices}</View>
-       </View>
+      </View>
     )
   },
 });
@@ -103,7 +102,8 @@ let ChoicePage = React.createClass({
 
   getInitialState(){
   	return ({
-      choice: '',
+      choice: [],
+      options: [],
     });
 	},
 
@@ -126,15 +126,45 @@ let ChoicePage = React.createClass({
     this._addChoice();
   },
 
+  // <Text style={styles.welcome}>How about doing some {this.state.choice}?</Text>
+  // <TouchableOpacity onPress={this._handlePress}
+  // style={styles.buttonContainer}>
+  //   <Text style={styles.button}>Sounds good!</Text>
+  // </TouchableOpacity>
+
+  _addOption() {
+    let options = this.state.options || [];
+    options.push(this.state.optionText);
+
+    let optionsElements = options.map((option) => {
+      return (
+        <Text style={styles.optionText}>
+          {option}
+        </Text>
+      );
+    });
+
+    this.setState({options, optionsElements});
+  },
+
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>How about doing some {this.state.choice}?</Text>
-        <TouchableOpacity onPress={this._handlePress}
-        style={styles.buttonContainer}>
-          <Text style={styles.button}>Sounds good!</Text>
-        </TouchableOpacity>
-       </View>
+        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+        onChangeText={(setName) => this.setState({setName})}
+        value={this.state.setName}
+        placeholder='Title eg Dinner'
+        onSubmitEditing={(a) => console.log(a)}/>
+
+        <TextInput style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+        onChangeText={(optionText) => this.setState({optionText})}
+        value={this.state.optionText}
+        onSubmitEditing={this._addOption}/>
+
+        <View style={styles.options}>
+          {this.state.optionsElements}
+        </View>
+      </View>
     )
   },
 });
@@ -177,6 +207,7 @@ let styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   welcome: {
     fontSize: 20,
@@ -188,6 +219,20 @@ let styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  options: {
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionText: {
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: 'orangered',
+    color: 'gold',
+    fontSize: 20,
+    borderRadius: 5,
   },
 });
 

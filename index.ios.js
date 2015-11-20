@@ -9,8 +9,8 @@ let DB = require('./db.js');
 let DBEvents = require('react-native-db-models').DBEvents;
 
 DBEvents.on('all', function(){
-  console.log('Database changed');
-})
+  // console.log('Database changed');
+});
 
 let {
   AppRegistry,
@@ -69,34 +69,43 @@ let WelcomePage = React.createClass({
   _getSets() {
     let sets = [];
 
+    // Get all current saved sets
     DB.sets.get_all((data) => {
-      let choicesRows = Object.keys(data.rows).map((row) => {
+      // Map over what we get back, and put in our own `sets` array
+      Object.keys(data.rows).map((row) => {
         sets.push(data.rows[row].name);
       });
-      this.setState({sets});
+
+      // Loop over that array to create some elements
+      let setsRows = sets.map((set) => {
+        return (
+          <TouchableOpacity style={styles.optionTextContainer}>
+            <Text style={styles.optionText}>
+              {set}
+            </Text>
+          </TouchableOpacity>
+        );
+      });
+
+      this.setState({sets: setsRows});
     });
   },
 
   componentWillMount() {
-    this._getChoices();
     this._getSets();
   },
 
   componentDidMount() {
-    this._getChoices();
     this._getSets();
   },
 
   componentDidUpdate() {
     setTimeout(() => {
-      this._getChoices();
       this._getSets();
     });
   },
 
   render() {
-    var choices = this.state.choices;
-
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>What are you doing today?</Text>
@@ -105,7 +114,9 @@ let WelcomePage = React.createClass({
           <Text style={styles.button}>Not sure, you choose</Text>
         </TouchableOpacity>
 
-        <Text>{this.state.sets}</Text>
+        <View style={styles.options, {flexDirection: 'column'}}>
+          {this.state.sets}
+        </View>
       </View>
     )
   },
@@ -178,20 +189,23 @@ let ChoicePage = React.createClass({
   _addOption() {
     let options = this.state.options || [];
     options.push(this.state.optionText);
-    this.setState({options});
+    this.setState({options, optionText: ''});
     this._buildOptions();
   },
 
   _submitSet() {
-    let options = this.state.options || [];
-    let setName = this.state.setName || '';
+    if (this.state.setName !== '' && this.state.options.length) {
+      let options = this.state.options || [];
+      let setName = this.state.setName || '';
 
-    console.log(options);
-
-    DB.sets.add({
-      name: setName,
-      options,
-    }, this._handlePress);
+      DB.sets.add({
+        name: setName,
+        options,
+      }, this._handlePress);
+    } else {
+      // Something that happens when we don't have
+      // the required info?
+    }
   },
 
   render() {
@@ -200,8 +214,7 @@ let ChoicePage = React.createClass({
         <TextInput style={styles.textInput}
         onChangeText={(setName) => this.setState({setName})}
         value={this.state.setName}
-        placeholder='Title eg Dinner'
-        onSubmitEditing={(a) => console.log(a)}/>
+        placeholder='Title eg Dinner'/>
 
         <TextInput style={styles.textInput}
         onChangeText={(optionText) => this.setState({optionText})}

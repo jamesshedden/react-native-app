@@ -51,7 +51,7 @@ let WelcomePage = React.createClass({
 	},
 
   _handlePress() {
-    this.props.navigator.push({id: 2,});
+    this.props.navigator.push({id: 2});
   },
 
   _getChoices() {
@@ -66,6 +66,12 @@ let WelcomePage = React.createClass({
     });
   },
 
+  _navigateToEditView(setId) {
+    DB.sets.get_id(setId, (data) => {
+      this.props.navigator.push({id: 2, set: data});
+    })
+  },
+
   _getSets() {
     let sets = [];
 
@@ -73,15 +79,19 @@ let WelcomePage = React.createClass({
     DB.sets.get_all((data) => {
       // Map over what we get back, and put in our own `sets` array
       Object.keys(data.rows).map((row) => {
-        sets.push(data.rows[row].name);
+        sets.push({
+          name: data.rows[row].name,
+          id: data.rows[row]._id,
+        });
       });
 
       // Loop over that array to create some elements
       let setsRows = sets.map((set) => {
         return (
-          <TouchableOpacity style={styles.optionTextContainer}>
+          <TouchableOpacity style={styles.optionTextContainer}
+          onPress={this._navigateToEditView.bind(this, set.id)}>
             <Text style={styles.optionText}>
-              {set}
+              {set.name}
             </Text>
           </TouchableOpacity>
         );
@@ -114,7 +124,7 @@ let WelcomePage = React.createClass({
           <Text style={styles.button}>Not sure, you choose</Text>
         </TouchableOpacity>
 
-        <View style={styles.options, {flexDirection: 'column'}}>
+        <View style={styles.options}>
           {this.state.sets}
         </View>
       </View>
@@ -128,9 +138,21 @@ let ChoicePage = React.createClass({
   },
 
   getInitialState(){
+    let options, setName;
+
+    if (this.props.set) {
+      options = this.props.set[0].options;
+      setName = this.props.set[0].name;
+    } else {
+      options = [];
+      setName = '';
+    }
+
   	return ({
       choice: [],
-      options: [],
+      set: this.props.set,
+      options,
+      setName,
     });
 	},
 
@@ -151,6 +173,7 @@ let ChoicePage = React.createClass({
 
   componentDidMount() {
     this._addChoice();
+    this._buildOptions();
   },
 
   // <Text style={styles.welcome}>How about doing some {this.state.choice}?</Text>
@@ -160,23 +183,25 @@ let ChoicePage = React.createClass({
   // </TouchableOpacity>
 
   _buildOptions() {
-    let optionsElements = this.state.options.map((option, index) => {
-      return (
-        <View style={{flexDirection: 'row'}}>
-          <View style={styles.optionTextContainer}>
-            <Text style={styles.optionText}>
-              {option}
-            </Text>
-          </View>
+    if (this.state.options.length) {
+      let optionsElements = this.state.options.map((option, index) => {
+        return (
+          <View style={{flexDirection: 'row'}}>
+            <View style={styles.optionTextContainer}>
+              <Text style={styles.optionText}>
+                {option}
+              </Text>
+            </View>
 
-          <TouchableOpacity style={styles.optionRemoveBtn}
-          onPress={this._removeOption.bind(this, index)}>
-            <Text style={styles.optionRemoveBtnText}>x</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-    this.setState({optionsElements});
+            <TouchableOpacity style={styles.optionRemoveBtn}
+            onPress={this._removeOption.bind(this, index)}>
+              <Text style={styles.optionRemoveBtnText}>x</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      });
+      this.setState({optionsElements});
+    }
   },
 
   _removeOption(index) {
@@ -194,17 +219,27 @@ let ChoicePage = React.createClass({
   },
 
   _submitSet() {
-    if (this.state.setName !== '' && this.state.options.length) {
-      let options = this.state.options || [];
-      let setName = this.state.setName || '';
-
-      DB.sets.add({
-        name: setName,
-        options,
-      }, this._handlePress);
+    if (this.state.set) {
+      DB.sets.update(
+        {
+          _id: this.state.set[0]._id,
+        },
+        {
+          name: this.state.setName,
+          options: this.state.options,
+        },
+        this._handlePress
+      );
     } else {
-      // Something that happens when we don't have
-      // the required info?
+      if (this.state.setName !== '' && this.state.options.length) {
+        DB.sets.add({
+          name: this.state.setName,
+          options: this.state.options
+        }, this._handlePress);
+      } else {
+        // Something that happens when we don't have
+        // the required info?
+      }
     }
   },
 
@@ -240,7 +275,7 @@ let reactNativeProject = React.createClass({
     if (route.id === 1) {
       return <WelcomePage navigator={navigator} />
     } else if (route.id === 2) {
-      return <ChoicePage navigator={navigator} />
+      return <ChoicePage navigator={navigator} set={route.set}/>
     }
   },
 
@@ -250,7 +285,7 @@ let reactNativeProject = React.createClass({
 
   render() {
     return (
-      <Navigator initialRoute={{id: 1, }}
+      <Navigator initialRoute={{id: 1}}
       style={styles.navigator}
       renderScene={this._renderScene}
       configureScene={this._configureScene} />
@@ -295,7 +330,7 @@ let styles = StyleSheet.create({
   optionTextContainer: {
     backgroundColor: 'orangered',
     borderRadius: 5,
-    marginBottom: 10,
+    marginTop: 10,
     padding: 10,
     borderColor: 'orangered',
     borderWidth: 1,
@@ -306,7 +341,7 @@ let styles = StyleSheet.create({
     fontSize: 20,
   },
   optionRemoveBtn: {
-    marginBottom: 10,
+    marginTop: 10,
     padding: 10,
     borderRadius: 5,
     borderColor: 'orangered',

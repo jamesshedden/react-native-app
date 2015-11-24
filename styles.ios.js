@@ -1,0 +1,118 @@
+let React = require('react-native');
+
+export const styles = React.StyleSheet.create({
+  nav: {
+    height: 70,
+    width: 375,
+    flexDirection: 'row',
+    backgroundColor: 'orangered',
+    paddingTop: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 15,
+  },
+  navButtonContainer: {
+    marginTop: 10,
+    flex: 1,
+  },
+  navButton: {
+    color: 'white',
+    fontSize: 20,
+  },
+  navTitle: {
+    fontSize: 20,
+    textAlign: 'center',
+    flex: 1,
+    marginTop: 10,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  wrapper: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: 'gold',
+    width: 375,
+  },
+  navigator: {
+    flex: 1,
+    backgroundColor: 'orangered',
+  },
+  buttonContainer: {
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    backgroundColor: 'cornflowerblue',
+  },
+  buttonContainerHollow: {
+    backgroundColor: null,
+    borderColor: 'cornflowerblue',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'orangered',
+  },
+  button: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonHollow: {
+    color: 'cornflowerblue',
+  },
+  options: {
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  optionTextContainer: {
+    backgroundColor: 'orangered',
+    borderRadius: 5,
+    marginTop: 10,
+    padding: 10,
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  optionText: {
+    color: 'white',
+    fontSize: 20,
+  },
+  optionRemoveBtn: {
+    marginTop: 10,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    marginLeft: 5,
+  },
+  optionRemoveBtnText: {
+    color: 'orangered',
+    fontSize: 20,
+  },
+  textInput: {
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderRadius: 5,
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    height: 40,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+});

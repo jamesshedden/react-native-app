@@ -48,9 +48,14 @@ export const ChoicePage = React.createClass({
         </View>
 
         <View style={styles.wrapper}>
-          <View style={{flex: 1}}>
-            <Text>{this.state.setName}</Text>
-            <Text>{this.state.choice}</Text>
+          <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center',
+        alignItems: 'center'}}>
+            <Text style={{textAlign: 'center', fontSize: 40, marginBottom: 20, color: 'orangered'}}>
+              {this.state.setName}
+            </Text>
+            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', marginBottom: 20, color: 'cornflowerblue'}}>
+              {this.state.choice}
+            </Text>
           </View>
 
           <TouchableOpacity style={styles.buttonContainer}

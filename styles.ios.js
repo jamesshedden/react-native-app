@@ -1,6 +1,20 @@
 let React = require('react-native');
 
 export const styles = React.StyleSheet.create({
+  editButton: {
+    backgroundColor: null,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    marginTop: 10,
+    padding: 10,
+    borderColor: 'orangered',
+    borderWidth: 1,
+    borderStyle: 'solid',
+  },
+  editButtonText: {
+    color: 'orangered',
+    fontSize: 20,
+  },
   nav: {
     height: 70,
     width: 375,
@@ -79,7 +93,8 @@ export const styles = React.StyleSheet.create({
   },
   optionTextContainer: {
     backgroundColor: 'orangered',
-    borderRadius: 5,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
     marginTop: 10,
     padding: 10,
     borderColor: 'orangered',
@@ -89,6 +104,7 @@ export const styles = React.StyleSheet.create({
   optionText: {
     color: 'white',
     fontSize: 20,
+    fontWeight: 'bold',
   },
   optionRemoveBtn: {
     marginTop: 10,

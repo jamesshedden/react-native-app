@@ -66,9 +66,9 @@ export const WelcomePage = React.createClass({
               {set.name}
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.optionTextContainer}
+          <TouchableOpacity style={styles.editButton}
           onPress={this._navigateToEditView.bind(this, set.id)}>
-            <Text style={styles.optionText}>
+            <Text style={styles.editButtonText}>
               Edit
             </Text>
           </TouchableOpacity>

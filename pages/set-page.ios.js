@@ -70,9 +70,9 @@ export const SetPage = React.createClass({
               </Text>
             </View>
 
-            <TouchableOpacity style={styles.optionRemoveBtn}
+            <TouchableOpacity style={styles.editButton}
             onPress={this._removeOption.bind(this, index)}>
-              <Text style={styles.optionRemoveBtnText}>x</Text>
+              <Text style={styles.editButtonText}>Remove</Text>
             </TouchableOpacity>
           </View>
         );
@@ -174,12 +174,12 @@ export const SetPage = React.createClass({
           <TextInput style={styles.textInput}
           onChangeText={(setName) => this.setState({setName})}
           value={this.state.setName}
-          placeholder='Title eg Dinner'/>
+          placeholder='Title eg Coin flip'/>
 
           <TextInput style={styles.textInput}
           onChangeText={(optionText) => this.setState({optionText})}
           value={this.state.optionText}
-          placeholder='Option eg Pizza'
+          placeholder='Option eg Heads'
           onSubmitEditing={this._addOption}/>
 
           <View style={styles.options}>

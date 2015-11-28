@@ -1,5 +1,7 @@
 import {styles} from '../styles.ios.js';
 import {DB} from '../db.js';
+import RNShakeEventIOS from 'react-native-shake-event-ios';
+
 let React = require('react-native');
 
 let {
@@ -31,6 +33,14 @@ export const ChoicePage = React.createClass({
         {toValue: 1, duration: 500},
       ),
     ]).start();
+  },
+
+  componentWillMount() {
+    RNShakeEventIOS.addEventListener('shake', this._randomChoice);
+  },
+
+  componentWillUnmount() {
+    RNShakeEventIOS.removeEventListener('shake');
   },
 
   componentDidMount() {

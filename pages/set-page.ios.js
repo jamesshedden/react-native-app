@@ -86,7 +86,7 @@ export const SetPage = React.createClass({
   _addOption() {
     if (this.state.optionText === undefined) return false;
     let options = this.state.options || [];
-    let optionTextArray = this.state.optionText.split(',');
+    let optionTextArray = this.state.optionText.split(', ');
 
     optionTextArray.map((text) => {
       options.push(text);

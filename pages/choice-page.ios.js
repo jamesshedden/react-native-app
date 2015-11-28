@@ -6,6 +6,7 @@ let {
   Text,
   View,
   TouchableOpacity,
+  Animated,
 } = React;
 
 export const ChoicePage = React.createClass({
@@ -15,14 +16,29 @@ export const ChoicePage = React.createClass({
       set: this.props.set,
       options: this.props.set[0].options,
       setName: this.props.set[0].name,
+      fadeAnim: new Animated.Value(0),
     });
 	},
+
+  _fadeInChoice() {
+    Animated.sequence([
+      Animated.timing(
+        this.state.fadeAnim,
+        {toValue: 0, duration: 0},
+      ),
+      Animated.timing(
+        this.state.fadeAnim,
+        {toValue: 1, duration: 500},
+      ),
+    ]).start();
+  },
 
   componentDidMount() {
     this._randomChoice();
   },
 
   _randomChoice() {
+    this._fadeInChoice();
     let choice = this.state.options[Math.floor(Math.random() * this.state.options.length)];
     this.setState({choice});
   },
@@ -50,12 +66,16 @@ export const ChoicePage = React.createClass({
         <View style={styles.wrapper}>
           <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center',
         alignItems: 'center'}}>
-            <Text style={{textAlign: 'center', fontSize: 40, marginBottom: 20, color: 'orangered'}}>
+            <Text style={styles.choiceSetText}>
               {this.state.setName}
             </Text>
-            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', marginBottom: 20, color: 'cornflowerblue'}}>
+
+            <Animated.Text style={[
+              styles.choiceText,
+              {opacity: this.state.fadeAnim},
+            ]}>
               {this.state.choice}
-            </Text>
+            </Animated.Text>
           </View>
 
           <TouchableOpacity style={styles.buttonContainer}

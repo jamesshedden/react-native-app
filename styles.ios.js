@@ -2,7 +2,7 @@ let React = require('react-native');
 
 export const styles = React.StyleSheet.create({
   editButton: {
-    backgroundColor: null,
+    backgroundColor: 'gold',
     borderTopRightRadius: 5,
     borderBottomRightRadius: 5,
     marginTop: 10,
@@ -58,7 +58,7 @@ export const styles = React.StyleSheet.create({
     backgroundColor: 'cornflowerblue',
   },
   buttonContainerHollow: {
-    backgroundColor: null,
+    backgroundColor: 'gold',
     borderColor: 'cornflowerblue',
     borderWidth: 1,
     borderStyle: 'solid',
@@ -89,6 +89,7 @@ export const styles = React.StyleSheet.create({
     flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
+    textAlign: 'center',
     alignItems: 'center',
   },
   optionTextContainer: {
@@ -130,5 +131,23 @@ export const styles = React.StyleSheet.create({
     height: 40,
     paddingLeft: 10,
     paddingRight: 10,
+  },
+  scrollViewInner: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  choiceText: {
+    textAlign: 'center',
+    fontSize: 40,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: 'cornflowerblue'
+  },
+  choiceSetText: {
+    textAlign: 'center',
+    fontSize: 40,
+    marginBottom: 20,
+    color: 'orangered'
   },
 });

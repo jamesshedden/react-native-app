@@ -6,6 +6,7 @@ let {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
   TextInput,
 } = React;
 
@@ -53,14 +54,8 @@ export const SetPage = React.createClass({
     this._buildOptions();
   },
 
-  // <Text style={styles.welcome}>How about doing some {this.state.choice}?</Text>
-  // <TouchableOpacity onPress={this._handlePress}
-  // style={styles.buttonContainer}>
-  //   <Text style={styles.button}>Sounds good!</Text>
-  // </TouchableOpacity>
-
   _buildOptions() {
-    if (this.state.options.length) {
+
       let optionsElements = this.state.options.map((option, index) => {
         return (
           <View style={{flexDirection: 'row'}}>
@@ -78,7 +73,7 @@ export const SetPage = React.createClass({
         );
       });
       this.setState({optionsElements});
-    }
+
   },
 
   _removeOption(index) {
@@ -89,9 +84,19 @@ export const SetPage = React.createClass({
   },
 
   _addOption() {
+    if (this.state.optionText === undefined) return false;
     let options = this.state.options || [];
-    options.push(this.state.optionText);
-    this.setState({options, optionText: ''});
+    let optionTextArray = this.state.optionText.split(',');
+
+    optionTextArray.map((text) => {
+      options.push(text);
+    });
+
+    this.setState({
+      options,
+      optionText: ''
+    });
+
     this._buildOptions();
   },
 
@@ -179,12 +184,14 @@ export const SetPage = React.createClass({
           <TextInput style={styles.textInput}
           onChangeText={(optionText) => this.setState({optionText})}
           value={this.state.optionText}
-          placeholder='Option eg Heads'
+          placeholder='Options eg Heads, Tails'
           onSubmitEditing={this._addOption}/>
 
-          <View style={styles.options}>
-            {this.state.optionsElements}
-          </View>
+          <ScrollView contentContainerstyle={styles.options} style={{flex: 1}}>
+            <View style={styles.scrollViewInner}>
+              {this.state.optionsElements}
+            </View>
+          </ScrollView>
 
           <TouchableOpacity style={[styles.buttonContainer, styles.buttonContainerHollow]}
           onPress={this._submitSet}>

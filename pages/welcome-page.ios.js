@@ -129,7 +129,7 @@ export const WelcomePage = React.createClass({
     return (
       <View style={styles.container}>
         <View style={styles.nav}>
-          <Text style={styles.navTitle}>Choose</Text>
+          <Text style={styles.navTitle}>wisechoice</Text>
         </View>
 
         <WelcomePageContent
